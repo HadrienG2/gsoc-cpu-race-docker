@@ -44,7 +44,7 @@ RUN apt-get install --yes cmake git dpkg-dev g++ gcc binutils libx11-dev       \
 # Install other software prerequisites
 RUN apt-get install --yes ninja-build libopenblas-dev liblapack-dev            \
                           libboost-all-dev doxygen graphviz libeigen3-dev      \
-                          r-base time
+                          r-base r-cran-ggplot2 time
 
 
 # === INSTALL INTEL TBB ===
@@ -261,8 +261,11 @@ RUN cd Fast5x5 && mkdir build && cd build                                      \
 # Run the tests
 RUN cd Fast5x5/build && ./test/unit_tests
 
-# Run the benchmark and associated analysis
-RUN cd Fast5x5 && bash measure_perf.sh && R CMD BATCH analysis.R
+# Run the benchmark
+RUN cd Fast5x5 && bash measure_perf.sh
+
+# Analyze the benchmark's results
+RUN cd Fast5x5 && Rscript analysis.R
 
 
 # === FINAL CLEAN UP ===

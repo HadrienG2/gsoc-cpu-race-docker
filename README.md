@@ -65,6 +65,12 @@ Now, how to adapt the Dockerfile recipe to your own system?
   find the proper package names for your system (and possibly install some
   extra packages)
 - Some of the builds in this recipe (in particular acts-core) are quite
-  RAM-hungry and will merilly eat a little more than 2 GB of RAM per process. If
-  your machine has less RAM than that, you may need to tune down the build job
+  RAM-hungry and will merilly eat close to 2 GB of RAM per process. If your
+  machine has less RAM than that, you may need to tune down the build job
   concurrency, which you can do by passing a -jN flag to ninja.
+- The Docker build recipe errs on the side of exhaustivity, building projects
+  with as many components as possible and performing extensive sanity checks on
+  the build. We recommend that you follow the same approach if you are trying
+  out a new Linux distro or compiler. However, when working in a known-good
+  environment, you can safely remove many sanity checks (and associated software
+  dependencies) to save up build time.
