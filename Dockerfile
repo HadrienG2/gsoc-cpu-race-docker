@@ -46,7 +46,7 @@ RUN apt-get install --yes cmake git dpkg-dev g++ gcc binutils libx11-dev       \
 # Install other software prerequisites
 RUN apt-get install --yes ninja-build libopenblas-dev liblapack-dev            \
                           libboost-all-dev doxygen graphviz libeigen3-dev      \
-                          r-base
+                          r-base time
 
 
 # === INSTALL INTEL TBB ===
@@ -235,7 +235,8 @@ RUN cd acts-core/build && ninja install
 # === SETUP LUCAS SERRANO'S LINEAR ALGEBRA PRIMITIVES ===
 
 # Download linear algebra primitives from Lucas Serrano
-RUN git clone https://gitlab.in2p3.fr/chamont/Fast5x5.git
+RUN git clone --branch=docker-and-bench-fixes                                  \
+              https://gitlab.in2p3.fr/grasland/Fast5x5.git
 
 # Extract our fork of Boost.SIMD
 #
@@ -254,13 +255,13 @@ RUN rm -rf boost.simd
 
 # Build the linear algebra primitives
 RUN cd Fast5x5 && mkdir build && cd build                                      \
-    && cmake -GNinja .. && ninja
+    && cmake .. && make -j8
 
 # Run the tests
 RUN cd Fast5x5/build && ./test/unit_tests
 
 # Run the benchmark and associated analysis
-RUN cd Fast5x5 && bash measure_perf.sh && R analysis.R
+RUN cd Fast5x5 && bash measure_perf.sh && R CMD BATCH analysis.R
 
 
 # === FINAL CLEAN UP ===
