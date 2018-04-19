@@ -4,12 +4,12 @@
 
 To quickly get started in this GSoC project, we have built a Docker container
 which features all software which you are expected to need. This container is
-available in a pre-built form on the Docker Hub at `TODO`.
+available in a pre-built form on the Docker Hub as "hgrasland/gsoc-cpu-race".
 
 Given a working install of Docker on your computer, getting into the container
 should be as simple as running the following command:
 
-    docker run --rm -it `TODO`
+    docker run --rm -it hgrasland/gsoc-cpu-race
 
 You can also mount host directories into the container using the -v command line
 switch, and with a bit more work, you can also set up X11 forwarding in order to
