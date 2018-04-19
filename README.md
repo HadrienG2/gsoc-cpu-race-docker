@@ -1,4 +1,4 @@
-# Docker container build recipe for the "CPU race" GSoC project
+# Docker recipe for the "CPU race" GSoC project
 
 ## Using the pre-built container
 
