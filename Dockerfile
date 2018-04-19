@@ -1,15 +1,10 @@
-# NOTE: Although tested on Debian Stretch, this recipe should work on any GCC 6-
-#       based Linux distribution given suitable package management adaptations.
-#       Users of other distributions should note that several of the software
-#       packages that are being installed here are known not to build on GCC 7.
+# === DOCKER-SPECIFIC HACKERY ===
 
+# Configure the container's basic properties
 FROM debian:stretch
 LABEL Description="Environment for the 'CPU Race' GSoC project" Version="0.1"
 CMD bash
 SHELL ["/bin/bash", "-c"]
-
-
-# === SYSTEM SETUP ===
 
 # Build an environment setup script that works during docker build
 #
@@ -28,6 +23,9 @@ ENV BASH_ENV="/root/bash_env.sh"                                               \
 # By default, Docker runs commands in the root directory (/). It is cleaner and
 # more idiomatic to run them in our home directory (which is /root) instead.
 RUN echo "cd ~" >> "$SETUP_ENV"
+
+
+# === SYSTEM SETUP ===
 
 # Update the host system
 RUN apt-get update && apt-get upgrade --yes
