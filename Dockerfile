@@ -235,6 +235,9 @@ RUN cd acts-core/build && ninja install
 # === SETUP LUCAS SERRANO'S LINEAR ALGEBRA PRIMITIVES ===
 
 # Download linear algebra primitives from Lucas Serrano
+#
+# TODO: Switch to the master branch of chamont once the bench fixes are merged
+#
 RUN git clone --branch=docker-and-bench-fixes                                  \
               https://gitlab.in2p3.fr/grasland/Fast5x5.git
 
