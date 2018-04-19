@@ -64,3 +64,7 @@ Now, how to adapt the Dockerfile recipe to your own system?
   later Debian or Ubuntu releases, for other distributions you will need to
   find the proper package names for your system (and possibly install some
   extra packages)
+- Some of the builds in this recipe (in particular acts-core) are quite
+  RAM-hungry and will merilly eat a little more than 2 GB of RAM per process. If
+  your machine has less RAM than that, you may need to tune down the build job
+  concurrency, which you can do by passing a -jN flag to ninja.
