@@ -22,7 +22,7 @@ ENV BASH_ENV="/root/bash_env.sh"                                               \
 
 # By default, Docker runs commands in the root directory (/). It is cleaner and
 # more idiomatic to run them in our home directory (which is /root) instead.
-RUN echo "cd ~" >> "$SETUP_ENV"
+WORKDIR /root
 
 
 # === SYSTEM SETUP ===
