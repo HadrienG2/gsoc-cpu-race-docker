@@ -261,8 +261,9 @@ RUN cd Fast5x5 && mkdir build && cd build                                      \
 # Run the tests
 RUN cd Fast5x5/build && ./test/unit_tests
 
-# Run the benchmark
-RUN cd Fast5x5 && bash measure_perf.sh
+# Run the benchmarks
+RUN cd Fast5x5 && bash measure_perf.sh                                         \
+    && cd benchmark && bash benchmark.sh
 
 # Analyze the benchmark's results
 RUN cd Fast5x5 && Rscript analysis.R
