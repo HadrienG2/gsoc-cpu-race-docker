@@ -2,7 +2,7 @@
 
 # Configure the container's basic properties
 FROM debian:stretch
-LABEL Description="Environment for the 'CPU Race' GSoC project" Version="0.1"
+LABEL Description="Environment for the 'CPU Race' GSoC project" Version="0.2"
 CMD bash
 SHELL ["/bin/bash", "-c"]
 
@@ -141,11 +141,17 @@ RUN rm -rf benchmark
 # === INSTALL XSIMD ===
 
 # Download xsimd
-RUN git clone --branch=4.1.2 https://github.com/QuantStack/xsimd.git
+#
+# TODO: Switch back to an official release once necessary changes are merged
+#
+RUN git clone --branch=shim-take2 https://github.com/HadrienG2/xsimd.git
 
-# Build and run the tests
+# Build and run the tests/benchmarks
 RUN cd xsimd && mkdir build && cd build                                        \
-    && cmake -GNinja .. && ninja xtest
+    && cmake -GNinja -DENABLE_FALLBACK=ON .. && ninja xtest
+
+# Build and run the benchmarks
+RUN cd xsimd/build  && ninja xbenchmark
 
 # Install xsimd
 RUN cd xsimd/build && ninja install
@@ -234,25 +240,9 @@ RUN cd acts-core/build && ninja install
 
 # Download linear algebra primitives from Lucas Serrano
 #
-# TODO: Switch to the master branch of chamont once the bench fixes are merged
+# TODO: Switch to an official release once all changes are merged
 #
-RUN git clone --branch=docker-and-bench-fixes                                  \
-              https://gitlab.in2p3.fr/grasland/Fast5x5.git
-
-# Extract our fork of Boost.SIMD
-#
-# NOTE: For context, the Boost.SIMD developers recently decided to rewrite their
-#       entire public Git history in order to remove some features of the
-#       library. We needed the features. Therefore, we had to fork the library.
-#
-RUN tar xJf Fast5x5/docker/boost.simd.tar.xz
-
-# Install boost.simd
-RUN cd boost.simd && mkdir build && cd build                                   \
-    && cmake -GNinja .. && ninja && ninja install
-
-# Get rid of the boost.simd build directory
-RUN rm -rf boost.simd
+RUN git clone --branch=xsimd https://gitlab.in2p3.fr/grasland/Fast5x5
 
 # Build the linear algebra primitives
 RUN cd Fast5x5 && mkdir build && cd build                                      \

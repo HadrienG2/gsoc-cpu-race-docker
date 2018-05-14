@@ -30,17 +30,12 @@ compatibility issues which you should know about early on:
 
 - The software that we are building is known to build on GCC 6.3, but to **fail
   to build** on GCC 7.3. Earlier GCC releases are a question mark, later
-  releases of GCC are unfortunately unlikely to work without code adaptations.
+  releases of GCC should work as the relevant patch has already been merged in
+  GCC's development branches.
 - The projects which have known compiler compatibility issues are:
   * **xtl**, which is the base of the xtensor stack. This build failure is due
     to a GCC bug, and should be fixed in an upcoming GCC 7.x release or in
-    GCC 8. Which only leaves...
-  * **Boost.SIMD**, which is used by the Fast5x5 project. Here, the problem is
-    that we are using a forked version of an abandoned software project, which
-    contains illegal C++ that only compiled on GCC 6 by chance. So this issue
-    will not resolve itself, and the long-term fix is to rewrite the Fast5x5
-    code using a different SIMD abstraction layer. Or to obsolete it with an
-    xtensor-based solution ;)
+    GCC 8.
 
 TL;DR: If your Linux distribution is based on GCC 6, you can safely proceed. If
 it uses GCC 7 or newer, expect some breakage. You will be able to work on the
