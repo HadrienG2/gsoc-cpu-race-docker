@@ -236,9 +236,9 @@ RUN cd acts-core/build && ninja install
 #       provide a Docker-friendly build recipe for this package.
 
 
-# === SETUP LUCAS SERRANO'S LINEAR ALGEBRA PRIMITIVES ===
+# === SETUP THE FAST5X5 SMALL MATRIX LIBRARY ===
 
-# Download linear algebra primitives from Lucas Serrano
+# Download the Fast5x5 linear algebra primitives
 #
 # TODO: Switch to an official release once all changes are merged
 #
