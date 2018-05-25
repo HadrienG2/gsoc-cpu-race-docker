@@ -144,9 +144,9 @@ RUN rm -rf benchmark
 #
 # TODO: Switch back to an official release once necessary changes are merged
 #
-RUN git clone --branch=shim-take2 https://github.com/HadrienG2/xsimd.git
+RUN git clone --branch=master https://github.com/QuantStack/xsimd.git
 
-# Build and run the tests/benchmarks
+# Build and run the tests
 RUN cd xsimd && mkdir build && cd build                                        \
     && cmake -GNinja -DENABLE_FALLBACK=ON .. && ninja xtest
 
