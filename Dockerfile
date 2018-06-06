@@ -138,13 +138,28 @@ RUN cd benchmark/build && ninja install
 RUN rm -rf benchmark
 
 
+# === INSTALL NLOHMANN-JSON ===
+
+# NOTE: As of xtl 0.4.9, xtl does not support the installation location used by
+#       the nlohmann-json-dev package from Debian Jessie, nor does it build with
+#       that version even if the header path problem is symlinked away. So a
+#       custom build seems necessary there.
+
+# Download nlohmann-json
+RUN git clone --branch=v3.1.2 https://github.com/nlohmann/json.git nlohmann-json
+
+# Build and run the tests
+RUN cd nlohmann-json && mkdir build && cd build                                \
+    && cmake -GNinja .. && ninja && ctest -j8 -VV --output-on-failure
+
+# Install nlohmann-json
+RUN cd nlohmann-json/build && ninja install
+
+
 # === INSTALL XSIMD ===
 
 # Download xsimd
-#
-# TODO: Switch back to an official release once necessary changes are merged
-#
-RUN git clone --branch=master https://github.com/QuantStack/xsimd.git
+RUN git clone --branch=5.0.0 https://github.com/QuantStack/xsimd.git
 
 # Build and run the tests
 RUN cd xsimd && mkdir build && cd build                                        \
@@ -160,7 +175,7 @@ RUN cd xsimd/build && ninja install
 # === INSTALL XTL ===
 
 # Download xtl
-RUN git clone --branch=0.4.7 https://github.com/QuantStack/xtl.git
+RUN git clone --branch=0.4.9 https://github.com/QuantStack/xtl.git
 
 # Build and run the tests
 RUN cd xtl && mkdir build && cd build                                          \
@@ -173,7 +188,7 @@ RUN cd xtl/build && ninja install
 # === INSTALL XTENSOR ===
 
 # Download xtensor
-RUN git clone --branch=0.15.9 https://github.com/QuantStack/xtensor.git
+RUN git clone --branch=0.16.3 https://github.com/QuantStack/xtensor.git
 
 # Build and run the tests
 RUN cd xtensor && mkdir build && cd build                                      \
@@ -191,7 +206,7 @@ RUN cd xtensor/build && ninja install
 # === INSTALL XTENSOR-BLAS ===
 
 # Download xtensor-blas
-RUN git clone --branch=0.10.1 https://github.com/QuantStack/xtensor-blas.git
+RUN git clone --branch=0.11.1 https://github.com/QuantStack/xtensor-blas.git
 
 # Build and run the tests
 RUN cd xtensor-blas && mkdir build && cd build                                 \
