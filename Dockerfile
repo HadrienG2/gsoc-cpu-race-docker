@@ -254,10 +254,7 @@ RUN cd acts-core/build && ninja install
 # === SETUP THE FAST5X5 SMALL MATRIX LIBRARY ===
 
 # Download the Fast5x5 linear algebra primitives
-#
-# TODO: Switch to an official release once all changes are merged
-#
-RUN git clone --branch=xsimd https://gitlab.in2p3.fr/grasland/Fast5x5
+RUN git clone https://gitlab.in2p3.fr/CodeursIntensifs/Fast5x5.git
 
 # Build the linear algebra primitives
 RUN cd Fast5x5 && mkdir build && cd build                                      \
