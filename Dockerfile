@@ -155,6 +155,9 @@ RUN cd nlohmann-json && mkdir build && cd build                                \
 # Install nlohmann-json
 RUN cd nlohmann-json/build && ninja install
 
+# Delete the nlohmann-json build directory
+RUN rm -rf nlohmann-json
+
 
 # === INSTALL XSIMD ===
 
@@ -240,6 +243,9 @@ RUN cd acts-core/build && ctest -j8
 
 # Install the core ACTS library
 RUN cd acts-core/build && ninja install
+
+# Clean up the ACTS build directory
+RUN cd acts-core/build && ninja clean
 
 
 # === INSTALL ACTS-FRAMEWORK ===
