@@ -191,7 +191,7 @@ RUN cd xtl/build && ninja install
 # === INSTALL XTENSOR ===
 
 # Download xtensor
-RUN git clone --branch=0.16.3 https://github.com/QuantStack/xtensor.git
+RUN git clone --branch=0.16.4 https://github.com/QuantStack/xtensor.git
 
 # Build and run the tests
 RUN cd xtensor && mkdir build && cd build                                      \
