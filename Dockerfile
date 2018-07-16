@@ -2,7 +2,7 @@
 
 # Configure the container's basic properties
 FROM debian:stretch
-LABEL Description="Environment for the 'CPU Race' GSoC project" Version="0.2"
+LABEL Description="Environment for the 'CPU Race' GSoC project" Version="0.3"
 CMD bash
 SHELL ["/bin/bash", "-c"]
 
@@ -122,7 +122,7 @@ RUN rm -rf googletest
 # === INSTALL GOOGLE BENCHMARK ===
 
 # Download google benchmark
-RUN git clone --branch=v1.4.0 --depth=1 https://github.com/google/benchmark.git
+RUN git clone --branch=v1.4.1 --depth=1 https://github.com/google/benchmark.git
 
 # Build google benchmark
 RUN cd benchmark && mkdir build && cd build                                    \
@@ -166,7 +166,8 @@ RUN git clone --branch=5.0.0 https://github.com/QuantStack/xsimd.git
 
 # Build and run the tests
 RUN cd xsimd && mkdir build && cd build                                        \
-    && cmake -GNinja -DENABLE_FALLBACK=ON .. && ninja xtest
+    && cmake -GNinja -DENABLE_FALLBACK=ON ..                                   \
+    && ninja xtest
 
 # Build and run the benchmarks
 RUN cd xsimd/build  && ninja xbenchmark
@@ -178,7 +179,7 @@ RUN cd xsimd/build && ninja install
 # === INSTALL XTL ===
 
 # Download xtl
-RUN git clone --branch=0.4.9 https://github.com/QuantStack/xtl.git
+RUN git clone --branch=0.4.12 https://github.com/QuantStack/xtl.git
 
 # Build and run the tests
 RUN cd xtl && mkdir build && cd build                                          \
