@@ -2,7 +2,7 @@
 
 # Configure the container's basic properties
 FROM debian:stretch
-LABEL Description="Environment for the 'CPU Race' GSoC project" Version="0.3"
+LABEL Description="Environment for the 'CPU Race' GSoC project" Version="0.4"
 CMD bash
 SHELL ["/bin/bash", "-c"]
 
@@ -30,67 +30,10 @@ WORKDIR /root
 # Update the host system
 RUN apt-get update && apt-get upgrade --yes
 
-# Install ROOT's build prerequisites (as remarkably ridiculous as they may be)
-RUN apt-get install --yes cmake git dpkg-dev g++ gcc binutils libx11-dev       \
-                          libxpm-dev libxft-dev libxext-dev gfortran           \
-                          libssl-dev libpcre3-dev libglu1-mesa-dev libglew-dev \
-                          libftgl-dev default-libmysqlclient-dev libfftw3-dev  \
-                          libcfitsio-dev graphviz-dev                          \
-                          libavahi-compat-libdnssd-dev libldap2-dev python-dev \
-                          libxml2-dev libkrb5-dev libgsl-dev libqt4-dev        \
-                          libgl2ps-dev liblz4-dev liblz4-tool libblas-dev      \
-                          python-numpy liblzma-dev libsqlite3-dev libjpeg-dev
-
-# Install other software prerequisites
-RUN apt-get install --yes ninja-build libopenblas-dev liblapack-dev            \
-                          libboost-all-dev doxygen graphviz libeigen3-dev      \
-                          r-base r-cran-ggplot2 time
-
-
-# === INSTALL INTEL TBB ===
-
-# NOTE: We need a custom build of TBB because the package from Debian Stretch is
-#       a bit too old for ROOT's taste.
-
-# Clone TBB v2018u3
-RUN git clone --branch=2018_U3 --depth=1 https://github.com/01org/tbb.git
-
-# Build TBB
-RUN cd tbb && make -j8
-
-# "Install" TBB (Yes, TBB has nothing like "make install". Ask Intel.)
-RUN cd tbb                                                                     \
-    && make info | tail -n 1 > tbb_prefix.env                                  \
-    && source tbb_prefix.env                                                   \
-    && ln -s build/${tbb_build_prefix}_release lib                             \
-    && echo "source `pwd`/lib/tbbvars.sh" >> "$SETUP_ENV"
-
-
-# === INSTALL ROOT ===
-
-# Clone the desired ROOT version
-RUN git clone --branch=v6-12-06 --depth=1                                      \
-    https://github.com/root-project/root.git ROOT
-
-# Configure a reasonably minimal build of ROOT
-RUN cd ROOT && mkdir build-dir && cd build-dir                                 \
-    && cmake -Dbuiltin_ftgl=OFF -Dbuiltin_glew=OFF -Dbuiltin_lz4=OFF           \
-             -Dcastor=OFF -Dcxx14=ON -Ddavix=OFF -Dfail-on-missing=ON          \
-             -Dgfal=OFF -Dgnuinstall=ON -Dhttp=OFF -Dmysql=OFF -Doracle=OFF    \
-             -Dpgsql=OFF -Dpythia6=OFF -Dpythia8=OFF -Droot7=ON -Dssl=ON       \
-             -Dxrootd=OFF -GNinja ..
-
-# Build and install ROOT
-RUN cd ROOT/build-dir && ninja && ninja install
-
-# Prepare the environment for running ROOT
-RUN echo "source /usr/local/bin/thisroot.sh" >> "$SETUP_ENV"
-
-# Check that the ROOT install works
-RUN root -b -q -e "(6*7)-(6*7)"
-
-# Get rid of the ROOT build directory to save up space
-RUN rm -rf ROOT
+# Install basic software prerequisites
+RUN apt-get install --yes cmake git g++ gcc binutils ninja-build               \
+                          libopenblas-dev liblapack-dev  libeigen3-dev r-base  \
+                          r-cran-ggplot2 time
 
 
 # === INSTALL GOOGLE TEST ===
@@ -162,7 +105,7 @@ RUN rm -rf nlohmann-json
 # === INSTALL XSIMD ===
 
 # Download xsimd
-RUN git clone --branch=5.0.0 https://github.com/QuantStack/xsimd.git
+RUN git clone --branch=6.1.4 https://github.com/QuantStack/xsimd.git
 
 # Build and run the tests
 RUN cd xsimd && mkdir build && cd build                                        \
@@ -192,7 +135,7 @@ RUN cd xtl/build && ninja install
 # === INSTALL XTENSOR ===
 
 # Download xtensor
-RUN git clone --branch=0.16.4 https://github.com/QuantStack/xtensor.git
+RUN git clone --branch=master https://github.com/QuantStack/xtensor.git
 
 # Build and run the tests
 RUN cd xtensor && mkdir build && cd build                                      \
@@ -222,40 +165,6 @@ RUN cd xtensor-blas && mkdir build && cd build                                 \
 
 # Install xtensor-blas
 RUN cd xtensor-blas/build && ninja install
-
-
-# === INSTALL ACTS-CORE ===
-
-# Clone the current version of ACTS' core library
-RUN git clone https://gitlab.cern.ch/acts/acts-core.git
-
-# Configure a (mostly) full-featured build of core ACTS
-RUN cd acts-core && mkdir build && cd build                                    \
-    && cmake -GNinja -DEIGEN_PREFER_EXPORTED_EIGEN_CMAKE_CONFIGURATION=FALSE   \
-             -DACTS_BUILD_EXAMPLES=ON -DACTS_BUILD_INTEGRATION_TESTS=ON        \
-             -DACTS_BUILD_MATERIAL_PLUGIN=ON -DACTS_BUILD_TGEO_PLUGIN=ON       \
-             -DCMAKE_BUILD_TYPE=RelWithDebInfo ..
-
-# Build the core ACTS library
-RUN cd acts-core/build && ninja
-
-# Run the unit tests to check if everything is alright
-RUN cd acts-core/build && ctest -j8
-
-# Install the core ACTS library
-RUN cd acts-core/build && ninja install
-
-# Clean up the ACTS build directory
-RUN cd acts-core/build && ninja clean
-
-
-# === INSTALL ACTS-FRAMEWORK ===
-
-# TODO: Most ACTS integration tests live in the acts-framework repository, which
-#       provides a Gaudi-like test environment. However, this repository is
-#       momentarily unavailable to people without CERN credentials, as it
-#       depends on another private repo. Therefore, we are not yet able to
-#       provide a Docker-friendly build recipe for this package.
 
 
 # === SETUP THE FAST5X5 SMALL MATRIX LIBRARY ===
